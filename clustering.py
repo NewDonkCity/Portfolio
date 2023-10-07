@@ -40,7 +40,14 @@ sns.scatterplot(
 
 
 # %% also try lmplot and pairplot
+sns.lmplot(
+    x="area",
+    y="asymmetry_coefficient",
+    data=df,
+    hue="target"
+)
 
+sns.pairplot(df, hue="target")
 
 # %% determine the best numbmer of clusters
 from sklearn.cluster import KMeans
@@ -54,9 +61,14 @@ homogeneity = {}
 
 # use kmeans to loop over candidate number of clusters 
 # store inertia and homogeneity score in each iteration
-
+for k in range(1, 11):  # Trying 1 to 10 clusters
+    kmeans = KMeans(n_clusters=k)
+    kmeans.fit(x)
+    inertia[k] = kmeans.inertia_
+    homogeneity[k] = homogeneity_score(y, kmeans.labels_)
 
 # %% 
+
 ax = sns.lineplot(
     x=list(inertia.keys()),
     y=list(inertia.values()),
@@ -75,4 +87,3 @@ ax = sns.lineplot(
 )
 ax.set_ylabel("homogeneity")
 ax.figure.legend()
-
